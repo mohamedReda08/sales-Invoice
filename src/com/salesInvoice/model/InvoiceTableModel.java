@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class InvoiceTableModel extends AbstractTableModel {
 
     private ArrayList<Invoice> invoices;
-    private final String[] columns = {"Number", "Date", "Customer", "Total"};
+    private String[] columns = {"Number", "Date", "Customer", "Total"};
 
     public InvoiceTableModel(ArrayList<Invoice> invoices) {
         this.invoices = invoices;

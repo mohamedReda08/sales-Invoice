@@ -7,7 +7,8 @@ package com.salesInvoice.control;
 import com.salesInvoice.model.Invoice;
 import com.salesInvoice.model.InvoiceTableModel;
 import com.salesInvoice.model.Item;
-import com.salesInvoice.view.NewInvoiceForm;
+import com.salesInvoice.model.ItemsTableModel;
+import com.salesInvoice.view.InvoiceForm;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -25,9 +26,9 @@ import java.util.List;
  */
 public class Controller implements ActionListener {
 
-    private NewInvoiceForm form;
+    private InvoiceForm form;
 
-    public Controller(NewInvoiceForm form){
+    public Controller(InvoiceForm form){
         this.form = form;
     }
 
@@ -91,9 +92,9 @@ public class Controller implements ActionListener {
                             }
                         }
 
-                        Item item  = new Item( id, itemName,itemPrice, count,inv);
+                        Item item  = new Item(itemName,itemPrice, count,inv);
 
-                        assert inv != null;
+
                         inv.getItems().add(item);
                         System.out.println(item);
                     }
@@ -104,7 +105,7 @@ public class Controller implements ActionListener {
                 form.setInvoiceTableModel(invoiceTableModel);
                 form.getInvoiceTable().setModel(invoiceTableModel);
                 form.getInvoiceTableModel().fireTableDataChanged();
-            }
+}
 
         }
         catch (Exception e){

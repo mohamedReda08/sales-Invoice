@@ -10,14 +10,13 @@ package com.salesInvoice.model;
  */
 public class Item {
 
-    private int id;
     private String itemName;
     private double price;
     private int count;
     private Invoice invoice;
 
-    public Item(int id, String itemName, double price, int count, Invoice invoice) {
-        this.id = id;
+    public Item(String itemName, double price, int count, Invoice invoice) {
+
         this.itemName = itemName;
         this.price = price;
         this.count = count;
@@ -27,13 +26,7 @@ public class Item {
     public double getItemTotal(){
         return price*count;
     }
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getItemName() {
         return itemName;
@@ -59,6 +52,7 @@ public class Item {
         this.count = count;
     }
 
-
-
+    public Invoice getInvoice() {
+        return invoice;
+    }
 }

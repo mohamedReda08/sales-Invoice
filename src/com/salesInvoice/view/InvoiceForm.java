@@ -5,8 +5,10 @@
 package com.salesInvoice.view;
 
 import com.salesInvoice.control.Controller;
+import com.salesInvoice.control.TablesController;
 import com.salesInvoice.model.Invoice;
 import com.salesInvoice.model.InvoiceTableModel;
+import com.salesInvoice.model.ItemsTableModel;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -15,12 +17,12 @@ import java.util.ArrayList;
  *
  * @author moham
  */
-public class NewInvoiceForm extends javax.swing.JFrame {
+public class InvoiceForm extends javax.swing.JFrame {
 
     /**
      * Creates new form NewInvoiceForm
      */
-    public NewInvoiceForm() {
+    public InvoiceForm() {
         initComponents();
     }
 
@@ -35,6 +37,7 @@ public class NewInvoiceForm extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         invoicesTable = new javax.swing.JTable();
+        invoicesTable.getSelectionModel().addListSelectionListener(tablesController);
         invoicesTableLabel = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         invoiceNumberLabel = new javax.swing.JLabel();
@@ -78,19 +81,19 @@ public class NewInvoiceForm extends javax.swing.JFrame {
 
         jLabel2.setText("Invoice Number");
 
-        invoiceNumberLabel.setText("jLabel3");
+        invoiceNumberLabel.setText("");
 
         jLabel4.setText("Invoice Date");
 
-        invoiceDateLabel.setText("jLabel5");
+        invoiceDateLabel.setText("");
 
         jLabel6.setText("Customer Name");
 
-        customerNameLabel.setText("jLabel7");
+        customerNameLabel.setText("");
 
         jLabel8.setText("Invoice Total");
 
-        invoiceTotalLabel.setText("jLabel9");
+        invoiceTotalLabel.setText("");
 
         itemsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -211,20 +214,20 @@ public class NewInvoiceForm extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewInvoiceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InvoiceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewInvoiceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InvoiceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewInvoiceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InvoiceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewInvoiceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InvoiceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NewInvoiceForm().setVisible(true);
+                new InvoiceForm().setVisible(true);
             }
         });
     }
@@ -256,7 +259,7 @@ public class NewInvoiceForm extends javax.swing.JFrame {
     private  ArrayList<Invoice> invoices;
     private  Controller controller = new Controller(this);
     private  InvoiceTableModel invoiceTableModel;
-
+    private TablesController tablesController = new TablesController(this);
     public InvoiceTableModel getInvoiceTableModel() {
         return invoiceTableModel;
     }
@@ -264,7 +267,6 @@ public class NewInvoiceForm extends javax.swing.JFrame {
     public void setInvoiceTableModel(InvoiceTableModel invoiceTableModel) {
         this.invoiceTableModel = invoiceTableModel;
     }
-
     public ArrayList<Invoice> getInvoices() {
         Controller controller = new Controller(this);
         return invoices;
@@ -273,13 +275,17 @@ public class NewInvoiceForm extends javax.swing.JFrame {
     public void setInvoices(ArrayList<Invoice> invoices) {
         this.invoices = invoices;
     }
-// Tables Getters
+
+    public void setItemsTable(JTable itemsTable) {
+        this.itemsTable = itemsTable;
+    }
+    // Tables Getters
 
     public JTable getInvoiceTable() {
         return invoicesTable;
     }
 
-    public JTable getItemsTable() {
+    public JTable getItemsTable(ItemsTableModel itemsTableModel) {
         return itemsTable;
     }
 
@@ -294,7 +300,7 @@ public class NewInvoiceForm extends javax.swing.JFrame {
         return invoiceNumberLabel;
     }
 
-    public JLabel getInveDateLabel() {
+    public JLabel getInvDateLabel() {
         return invoiceDateLabel;
     }
 
@@ -305,6 +311,5 @@ public class NewInvoiceForm extends javax.swing.JFrame {
     public Controller getController() {
         return controller;
     }
-
 
 }
