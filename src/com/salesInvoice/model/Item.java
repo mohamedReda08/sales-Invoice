@@ -55,4 +55,8 @@ public class Item {
     public Invoice getInvoice() {
         return invoice;
     }
+
+    public String getItemsCSVFormat(){
+        return invoice.getId()+ ","+ itemName + ","+price+","+ count;
+    }
 }

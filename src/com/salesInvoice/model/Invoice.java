@@ -74,4 +74,8 @@ public class Invoice {
                 ", customerName='" + customerName + '\'' +
                 '}';
     }
+
+    public String getHeaderCSVFormat(){
+        return id +","+ invoiceDate + ","+ customerName;
+    }
 }

@@ -18,18 +18,23 @@ public class TablesController implements ListSelectionListener {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         int selectedIndex =  form.getInvoiceTable().getSelectedRow();
-        System.out.println("You Have Selected: "+selectedIndex);
-        Invoice currentInvoice = form.getInvoices().get(selectedIndex);
+
+        if(selectedIndex !=-1){
+
+            System.out.println("You Have Selected: "+selectedIndex);
+            Invoice currentInvoice = form.getInvoices().get(selectedIndex);
 //        Get Labels Data
 
-        form.getInvNumLabel().setText(""+currentInvoice.getId());
-        form.getInvDateLabel().setText(""+currentInvoice.getInvoiceDate());
-        form.getInvTotalLabel().setText(""+ currentInvoice.getTotal());
-        form.getCustomerNameLabel().setText(currentInvoice.getCustomerName());
+            form.getInvNumLabel().setText(""+currentInvoice.getId());
+            form.getInvDateLabel().setText(""+currentInvoice.getInvoiceDate());
+            form.getInvTotalLabel().setText(""+ currentInvoice.getTotal());
+            form.getCustomerNameLabel().setText(currentInvoice.getCustomerName());
 
-        ItemsTableModel itemsTableModel = new ItemsTableModel(currentInvoice.getItems());
+            ItemsTableModel itemsTableModel = new ItemsTableModel(currentInvoice.getItems());
 
-        form.getItemsTable(itemsTableModel).setModel(itemsTableModel);
-        itemsTableModel.fireTableDataChanged();
+            form.getItemsTable().setModel(itemsTableModel);
+            itemsTableModel.fireTableDataChanged();
+        }
+
     }
 }

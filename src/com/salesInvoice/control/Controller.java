@@ -8,12 +8,17 @@ import com.salesInvoice.model.Invoice;
 import com.salesInvoice.model.InvoiceTableModel;
 import com.salesInvoice.model.Item;
 import com.salesInvoice.model.ItemsTableModel;
+import com.salesInvoice.view.InvoiceDialog;
 import com.salesInvoice.view.InvoiceForm;
+import com.salesInvoice.view.ItemDialog;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,6 +32,9 @@ import java.util.List;
 public class Controller implements ActionListener {
 
     private InvoiceForm form;
+    private InvoiceDialog invoiceDialog;
+    private ItemDialog itemDialog;
+
 
     public Controller(InvoiceForm form){
         this.form = form;
@@ -43,14 +51,21 @@ public class Controller implements ActionListener {
             case "Delete Invoice"->deleteInvoice();
             case"Add New Item"-> addNewItem();
             case "Delete Item"-> deleteItem();
+            case  "Add New Invoice Ok" -> newInvoiceOk();
+            case "Add New Invoice Cancel", "Add Item Cancel" -> addNewCancel();
+            case "Add Item Ok" -> newItemOk();
         }
     }
 
 //Add CSV Files
     private void loadFile(){
         JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV",  "csv");
+
+        fileChooser.setFileFilter(filter);
         try {
             int result =fileChooser.showOpenDialog(form);
+
             if(result == JFileChooser.APPROVE_OPTION){
                 File fileHeader = fileChooser.getSelectedFile();
                 Path headerPath =  Paths.get(fileHeader.getAbsolutePath());
@@ -93,8 +108,6 @@ public class Controller implements ActionListener {
                         }
 
                         Item item  = new Item(itemName,itemPrice, count,inv);
-
-
                         inv.getItems().add(item);
                         System.out.println(item);
                     }
@@ -115,25 +128,128 @@ public class Controller implements ActionListener {
 
 //Save CSV Files
     private void saveFile(){
-        try {
+     ArrayList<Invoice> invoices = form.getInvoices();
+     String headerLines ="";
+     String itemLines ="";
 
+     for (Invoice  invoice:invoices ){
+
+         headerLines += invoice.getHeaderCSVFormat();
+         headerLines +="\n";
+
+        for(Item item:invoice.getItems()){
+             itemLines += item.getItemsCSVFormat();
+            itemLines += "\n";
         }
-        catch (Exception e){
+     }
+
+     JFileChooser chooser = new JFileChooser();
+     int result = chooser.showSaveDialog(form);
+     try{
+     if (result == JFileChooser.APPROVE_OPTION){
+         File headerFile = chooser.getSelectedFile();
+         FileWriter headerWriter = new FileWriter(headerFile);
+         headerWriter.write(headerLines);
+         headerWriter.flush();
+         headerWriter.close();
+
+         result = chooser.showSaveDialog(form);
+
+         if (result == JFileChooser.APPROVE_OPTION){
+             File itemsFile = chooser.getSelectedFile();
+             FileWriter itemsWriter = new FileWriter(itemsFile);
+             itemsWriter.write(itemLines);
+             itemsWriter.flush();
+             itemsWriter.close();
+
+         }
+     }
+     } catch(IOException ioException){
+         ioException.printStackTrace();
+     }
+    }
+
+//Create New Invoice Method
+    private void createNewInvoice(){
+        invoiceDialog = new InvoiceDialog(form);
+        invoiceDialog.setTitle("Add New Invoice");
+        invoiceDialog.setVisible(true);
+    }
+
+//    Delete Invoice Method
+    private void deleteInvoice(){
+        int activeInvoice = form.getInvoiceTable().getSelectedRow();
+        if(activeInvoice == -1){
+            System.out.println("Please Select Invoice to Delete");
+        }else{
+
+            Invoice invoice = form.getInvoices().get(activeInvoice);
+            form.getInvoices().remove(activeInvoice);
+            form.getInvoiceTableModel().fireTableDataChanged();
+        }
+    }
+
+//    Add New Item Method
+    private void addNewItem(){
+        itemDialog = new ItemDialog(form);
+        itemDialog.setTitle("Add New Item");
+        itemDialog.setVisible(true);
+
+    }
+
+//    Delete Item Method
+    private void deleteItem(){
+        int activeItem = form.getItemsTable().getSelectedRow();
+        int activeInvoice = form.getInvoiceTable().getSelectedRow();
+        if(activeInvoice!=-1 && activeItem != -1){
+            Invoice invoice = form.getInvoices().get(activeInvoice);
+            invoice.getItems().remove(activeItem);
+            updateItemsTable(invoice);
 
         }
     }
 
-//Create New Invoice Method
-    private void createNewInvoice(){}
+    private void newInvoiceOk(){
+        String customerName = invoiceDialog.getCustomerName().getText();
+        String invoiceDate = invoiceDialog.getInvoiceDate().getText();
+        int invoiceID = form.getNextInvoiceID();
 
-//    Delete Invoice Method
-    private void deleteInvoice(){}
+        Invoice invoice = new Invoice(invoiceID, invoiceDate, customerName);
+        form.getInvoices().add(invoice);
+        form.getInvoiceTableModel().fireTableDataChanged();
+        invoiceDialog.setVisible(false);
+        invoiceDialog.dispose();
+        invoiceDialog = null;
+    }
 
-//    Add New Item Method
-    private void addNewItem(){}
+    private void newItemOk(){
+        int activeInvoice = form.getInvoiceTable().getSelectedRow();
+        String itemName = itemDialog.getItemName().getText();
+        double itemPrice = Double.parseDouble(itemDialog.getItemPrice().getText());
+        int itemCount = Integer.parseInt(itemDialog.getItemCount().getText());
+        if(activeInvoice != -1){
 
-//    Delete Item Method
-    private void deleteItem(){}
+            Invoice invoice = form.getInvoices().get(activeInvoice);
+            Item item = new Item(itemName, itemPrice, itemCount, invoice);
+            invoice.getItems().add(item);
+            updateItemsTable(invoice);
+        }
+        addNewCancel();
 
+    }
+
+    private void addNewCancel(){
+        itemDialog.setVisible(false);
+        itemDialog.dispose();
+        itemDialog = null;
+    }
+
+    private void updateItemsTable(Invoice invoice){
+        ItemsTableModel itemsTableModel = new ItemsTableModel(invoice.getItems());
+        form.getItemsTable().setModel(itemsTableModel);
+        itemsTableModel.fireTableDataChanged();
+        form.getInvoiceTableModel().fireTableDataChanged();
+
+    }
 
 }

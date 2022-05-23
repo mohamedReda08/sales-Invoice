@@ -8,6 +8,7 @@ import com.salesInvoice.control.Controller;
 import com.salesInvoice.control.TablesController;
 import com.salesInvoice.model.Invoice;
 import com.salesInvoice.model.InvoiceTableModel;
+import com.salesInvoice.model.Item;
 import com.salesInvoice.model.ItemsTableModel;
 
 import javax.swing.*;
@@ -50,9 +51,13 @@ public class InvoiceForm extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         itemsTable = new javax.swing.JTable();
         createInvoiceButton = new javax.swing.JButton();
+        createInvoiceButton.addActionListener(controller);
         deleteInvoiceButton = new javax.swing.JButton();
+        deleteInvoiceButton.addActionListener(controller);
         addItemButton = new javax.swing.JButton();
+        addItemButton.addActionListener(controller);
         deleteItemButton = new javax.swing.JButton();
+        deleteItemButton.addActionListener(controller);
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         loadFileMenuItem = new javax.swing.JMenuItem();
@@ -255,14 +260,18 @@ public class InvoiceForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem loadFileMenuItem;
     private javax.swing.JMenuItem saveFileMenuItem;
     // End of variables declaration//GEN-END:variables
-
+    private ArrayList<Item> items;
     private  ArrayList<Invoice> invoices;
     private  Controller controller = new Controller(this);
     private  InvoiceTableModel invoiceTableModel;
+    private ItemsTableModel itemsTableModel;
     private TablesController tablesController = new TablesController(this);
     public InvoiceTableModel getInvoiceTableModel() {
         return invoiceTableModel;
     }
+public ItemsTableModel getItemsTableModel(){
+        return itemsTableModel;
+}
 
     public void setInvoiceTableModel(InvoiceTableModel invoiceTableModel) {
         this.invoiceTableModel = invoiceTableModel;
@@ -272,12 +281,16 @@ public class InvoiceForm extends javax.swing.JFrame {
         return invoices;
     }
 
+    public ArrayList<Item> getItems() {
+        return items;
+    }
+
     public void setInvoices(ArrayList<Invoice> invoices) {
         this.invoices = invoices;
     }
 
-    public void setItemsTable(JTable itemsTable) {
-        this.itemsTable = itemsTable;
+    public void setItems(ArrayList<Item> items) {
+        this.items = items;
     }
     // Tables Getters
 
@@ -285,7 +298,7 @@ public class InvoiceForm extends javax.swing.JFrame {
         return invoicesTable;
     }
 
-    public JTable getItemsTable(ItemsTableModel itemsTableModel) {
+    public JTable getItemsTable() {
         return itemsTable;
     }
 
@@ -310,6 +323,17 @@ public class InvoiceForm extends javax.swing.JFrame {
 
     public Controller getController() {
         return controller;
+    }
+
+    public int getNextInvoiceID(){
+        int nextID = 0;
+
+        for(Invoice invoice:invoices){
+            if(invoice.getId()>nextID){
+                    nextID++;
+            }
+        }
+        return nextID;
     }
 
 }
